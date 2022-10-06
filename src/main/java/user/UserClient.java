@@ -7,6 +7,7 @@ import io.restassured.response.ValidatableResponse;
 public class UserClient extends BaseClient {
     private final String REGISTER = "/auth/register";
     private final String DELETE = "/auth/user";
+    private final String LOGIN = "/auth/login";
 
     @Step("Создание пользователя")
     public ValidatableResponse create(User user) {
@@ -23,6 +24,15 @@ public class UserClient extends BaseClient {
                 .body(user)
                 .when()
                 .delete(DELETE)
+                .then().log().all();
+    }
+
+    @Step("Логин пользователя")
+    public ValidatableResponse login(UserCredentials userCredentials, String accessToken) {
+        return getSpecWithAuth(accessToken)
+                .body(userCredentials)
+                .when()
+                .post(LOGIN)
                 .then().log().all();
     }
 }
