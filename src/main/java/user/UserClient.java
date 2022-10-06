@@ -5,7 +5,7 @@ import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 
 public class UserClient extends BaseClient {
-    private final String ROOT = "/auth/register";
+    private final String REGISTER = "/auth/register";
     private final String DELETE = "/auth/user";
 
     @Step("Создание пользователя")
@@ -13,13 +13,13 @@ public class UserClient extends BaseClient {
         return getSpec()
                 .body(user)
                 .when()
-                .post(ROOT)
+                .post(REGISTER)
                 .then().log().all();
     }
 
     @Step("Удаление пользователя")
-    public ValidatableResponse delete(User user, String accessToken) {
-        return getSpecWithAuth(accessToken)
+    public void delete(User user, String accessToken) {
+        getSpecWithAuth(accessToken)
                 .body(user)
                 .when()
                 .delete(DELETE)
