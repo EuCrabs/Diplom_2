@@ -15,7 +15,7 @@ public class User {
 
     public static User getRandomUser() {
         return new User(
-                RandomStringUtils.randomAlphanumeric(10) + "@gmail.com",
+                RandomStringUtils.randomAlphanumeric(10) + "@yandex.ru",
                 "Pass123word",
                 RandomStringUtils.randomAlphabetic(10)
         );

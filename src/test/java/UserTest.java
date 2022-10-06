@@ -1,15 +1,17 @@
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import user.User;
 import user.UserClient;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class UserTest {
     User user;
     UserClient userClient;
+    String accessToken;
 
     @Before
     public void setup() {
@@ -19,16 +21,53 @@ public class UserTest {
 
     @After
     public void teardown() {
-        // add user deletion here
+        if (!accessToken.equals("")) {
+            userClient.delete(user, accessToken);
+        } else {
+            System.out.println("Нет пользователя для удаления");
+        }
     }
 
     @Test
-    @DisplayName("Проверка создания уникального юзера")
+    @DisplayName("Проверка создания уникального пользователя")
     public void createUniqueUser() {
-        boolean isUserCreated = userClient.create(user)
+        Response response = userClient.create(user)
                 .statusCode(200)
-                .extract().path("success");
+                .extract().response();
 
-        assertTrue(isUserCreated);
+        accessToken = response.path("accessToken");
+
+        assertTrue(response.path("success"));
+    }
+
+    @Test
+    @DisplayName("Проверка создания пользователя, который уже зарегистрирован")
+    public void createNonUniqueUser() {
+        Response initResponse = userClient.create(user)
+                .extract().response();
+
+        accessToken = initResponse.path("accessToken");
+
+        Response response = userClient.create(user)
+                .statusCode(403)
+                .extract().response();
+
+        assertFalse(response.path("success"));
+        assertEquals("User already exists", response.path("message"));
+    }
+
+    @Test
+    @DisplayName("Проверка создания пользователя без заполненного одно из обязательных полей")
+    public void createInvalidUser() {
+        user.setName("");
+
+        Response response = userClient.create(user)
+                .statusCode(403)
+                .extract().response();
+
+        accessToken = "";
+
+        assertFalse(response.path("success"));
+        assertEquals("Email, password and name are required fields", response.path("message"));
     }
 }
