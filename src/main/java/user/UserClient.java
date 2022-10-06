@@ -6,7 +6,7 @@ import io.restassured.response.ValidatableResponse;
 
 public class UserClient extends BaseClient {
     private final String REGISTER = "/auth/register";
-    private final String DELETE = "/auth/user";
+    private final String USER = "/auth/user";
     private final String LOGIN = "/auth/login";
 
     @Step("Создание пользователя")
@@ -18,12 +18,22 @@ public class UserClient extends BaseClient {
                 .then().log().all();
     }
 
+    // нужно понять как передавать поле
+    @Step("Изменение пользователя")
+    public ValidatableResponse uodate(User user, String accessToken) {
+        return getSpecWithAuth(accessToken)
+                .body(user)
+                .when()
+                .patch(USER)
+                .then().log().all();
+    }
+
     @Step("Удаление пользователя")
     public void delete(User user, String accessToken) {
         getSpecWithAuth(accessToken)
                 .body(user)
                 .when()
-                .delete(DELETE)
+                .delete(USER)
                 .then().log().all();
     }
 
