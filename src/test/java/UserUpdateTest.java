@@ -14,7 +14,7 @@ public class UserUpdateTest {
     UserClient userClient;
     UserCredentials userCredentials = new UserCredentials();
     String accessToken;
-    String invalidField = "blablalba";
+    String invalidField = "blablabla";
     String authError = "You should be authorised";
 
     @Before
