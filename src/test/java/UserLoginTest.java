@@ -35,7 +35,7 @@ public class UserLoginTest {
     @Test
     @DisplayName("Проверка логина под существующим пользователем")
     public void validLogin() {
-        userCredentials = new UserCredentials(user.getEmail(), user.getPassword());
+        userCredentials = UserCredentials.from(user);
         Response response = userClient.login(userCredentials, accessToken)
                 .statusCode(200)
                 .extract().response();
@@ -47,7 +47,7 @@ public class UserLoginTest {
     @DisplayName("Проверка логина с неверным логином и паролем")
     public void loginWithInvalidPassword() {
         user.setPassword("blablabla");
-        userCredentials = new UserCredentials(user.getEmail(), user.getPassword());
+        userCredentials = UserCredentials.from(user);
         Response response = userClient.login(userCredentials, accessToken)
                 .statusCode(401)
                 .extract().response();

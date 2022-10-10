@@ -19,10 +19,19 @@ public class UserClient extends BaseClient {
     }
 
     // нужно понять как передавать поле
-    @Step("Изменение пользователя")
-    public ValidatableResponse uodate(User user, String accessToken) {
+    @Step("Изменение пользователя с авторизацией")
+    public ValidatableResponse updateWithAuth(UserCredentials userCredentials, String accessToken) {
         return getSpecWithAuth(accessToken)
-                .body(user)
+                .body(userCredentials)
+                .when()
+                .patch(USER)
+                .then().log().all();
+    }
+
+    @Step("Изменение пользователя без авторизации")
+    public ValidatableResponse updateWithoutAuth(UserCredentials userCredentials) {
+        return getSpec()
+                .body(userCredentials)
                 .when()
                 .patch(USER)
                 .then().log().all();
