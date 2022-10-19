@@ -85,4 +85,19 @@ public class UserTest {
         assertFalse(response.path("success"));
         assertEquals("Email, password and name are required fields", response.path("message"));
     }
+
+    @Test
+    @DisplayName("Проверка создания пользователя без заполненного одно из обязательных полей - email")
+    public void createUserWithEmptyEmail() {
+        user.setEmail("");
+
+        Response response = userClient.create(user)
+                .statusCode(403)
+                .extract().response();
+
+        accessToken = "";
+
+        assertFalse(response.path("success"));
+        assertEquals("Email, password and name are required fields", response.path("message"));
+    }
 }
