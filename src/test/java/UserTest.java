@@ -57,9 +57,24 @@ public class UserTest {
     }
 
     @Test
-    @DisplayName("Проверка создания пользователя без заполненного одно из обязательных полей")
-    public void createInvalidUser() {
+    @DisplayName("Проверка создания пользователя без заполненного одно из обязательных полей - name")
+    public void createUserWithEmptyName() {
         user.setName("");
+
+        Response response = userClient.create(user)
+                .statusCode(403)
+                .extract().response();
+
+        accessToken = "";
+
+        assertFalse(response.path("success"));
+        assertEquals("Email, password and name are required fields", response.path("message"));
+    }
+
+    @Test
+    @DisplayName("Проверка создания пользователя без заполненного одно из обязательных полей - password")
+    public void createUserWithEmptyPassword() {
+        user.setPassword("");
 
         Response response = userClient.create(user)
                 .statusCode(403)
